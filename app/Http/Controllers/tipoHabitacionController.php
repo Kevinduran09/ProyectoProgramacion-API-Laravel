@@ -74,6 +74,42 @@ class TipoHabitacionController extends Controller
             'status' => 200
         ], 200);
     }
+    
+    /**
+     * Partially update the specified resource in storage.
+     */
+    public function partialUpdate(Request $request, $id)
+    {
+        $tipoHabitacion = TipoHabitacion::find($id);
+
+        if (!$tipoHabitacion) {
+            return response()->json([
+                'message' => 'Error, No se encontró el tipo de habitación que se está buscando',
+                'status' => 400
+            ], 400);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'tipoHabitacion' => '',
+            'capacidad' => 'numeric|min:1',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Error al validar los datos',
+                'errors' => $validator->errors(),
+                'status' => 400
+            ], 400);
+        }
+
+        $tipoHabitacion->update($request->only(['tipoHabitacion', 'capacidad']));
+
+        return response()->json([
+            'message' => 'Se actualizó parcialmente el registro del tipo de habitación',
+            'tipo_habitacion' => $tipoHabitacion,
+            'status' => 200
+        ], 200);
+    }
 
     /**
      * Update the specified resource in storage.
