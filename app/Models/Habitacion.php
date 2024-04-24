@@ -18,6 +18,6 @@ class Habitacion extends Model
     ];
 
     public function tipoHabitacion(){
-        return $this->belongsToMany(TipoHabitacion::class);
+        return $this->belongsTo(TipoHabitacion::class);
     }
 }

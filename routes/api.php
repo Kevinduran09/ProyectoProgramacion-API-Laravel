@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\HabitacionController;
 use App\Http\Controllers\UsuarioController;
-use App\Models\Usuario;
+use App\Http\Controllers\TipoHabitacionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,3 +21,12 @@ Route::post('/habitacion', [HabitacionController::class, 'store']);
 Route::put('/habitacion/{id}', [HabitacionController::class, 'update']);
 Route::patch('/habitacion/{id}', [HabitacionController::class, 'partialUpdate']);
 Route::delete('/habitacion/{id}', [HabitacionController::class, 'destroy']);
+
+
+// endpoints de la api tipo habitaciones
+Route::get('/tipoHabitacion', [TipoHabitacionController::class, 'index']);
+Route::get('/tipoHabitacion/{id}', [TipoHabitacionController::class, 'show']);
+Route::post('/tipoHabitacion', [TipoHabitacionController::class, 'store']);
+Route::put('/tipoHabitacion/{id}', [TipoHabitacionController::class, 'update']);
+Route::patch('/tipoHabitacion/{id}', [TipoHabitacionController::class, 'partialUpdate']);
+Route::delete('/tipoHabitacion/{id}', [TipoHabitacionController::class, 'destroy']);
