@@ -20,4 +20,9 @@ class Habitacion extends Model
     public function tipoHabitacion(){
         return $this->belongsTo(TipoHabitacion::class);
     }
+    public function reservaciones()
+    {
+        return $this->belongsToMany(Reservacion::class, 'reservacion_habitacion');
+    }
+
 }

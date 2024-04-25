@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HabitacionController;
+use App\Http\Controllers\ReservacionController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\TipoHabitacionController;
 use Illuminate\Http\Request;
@@ -30,3 +31,11 @@ Route::post('/tipoHabitacion', [TipoHabitacionController::class, 'store']);
 Route::put('/tipoHabitacion/{id}', [TipoHabitacionController::class, 'update']);
 Route::patch('/tipoHabitacion/{id}', [TipoHabitacionController::class, 'partialUpdate']);
 Route::delete('/tipoHabitacion/{id}', [TipoHabitacionController::class, 'destroy']);
+
+// endpoints de la api tipo habitaciones
+Route::get('/reservacion', [ReservacionController::class, 'index']);
+Route::get('/reservacion/{id}', [ReservacionController::class, 'show']);
+Route::post('/reservacion', [ReservacionController::class, 'store']);
+Route::put('/reservacion/{id}', [ReservacionController::class, 'update']);
+Route::patch('/reservacion/{id}', [ReservacionController::class, 'partialUpdate']);
+Route::delete('/reservacion/{id}', [ReservacionController::class, 'destroy']);

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('disponibilidad');
             $table->float('precioNoche');
-            $table->unsignedBigInteger('tipo_habitacion_id'); // Agrega la columna tipo_habitacion_id
+            $table->unsignedBigInteger('tipo_habitacion_id');
             
             $table->foreign('tipo_habitacion_id')
                 ->references('id')

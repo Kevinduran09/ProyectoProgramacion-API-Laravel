@@ -6,10 +6,24 @@ use App\Models\Habitacion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
+/**
+ * @OA\Info(
+ *             title="Título que mostraremos en swagger", 
+ *             version="1.0",
+ *             description="Descripcion"
+ * )
+ *
+ * @OA\Server(url="http://127.0.0.1:8000/")
+ */
 class HabitacionController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * @OA\Get(
+     *     path="/habitacion",
+     *     summary="Retorna lista de todas las habitaciones",
+     *     tags={"Users"},
+     *     @OA\Response(response=200, description="Lista de todos las habitaciones en el sistema"),
+     * )
      */
     public function index()
     {
@@ -27,7 +41,17 @@ class HabitacionController extends Controller
 
 
     /**
-     * Store a newly created resource in storage.
+     * @OA\Post(
+     *     path="/habitacion",
+     *     summary="Crear una nueva habitación",
+     *     tags={"Habitaciones"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/HabitacionRequest")
+     *     ),
+     *     @OA\Response(response=201, description="Habitación creada exitosamente"),
+     *     @OA\Response(response=400, description="Error al validar los datos")
+     * )
      */
     public function store(Request $request)
     {

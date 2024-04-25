@@ -15,14 +15,14 @@ class Reservacion extends Model
         'fechaIngreso',
         'fechaSalida',
         'estado',
-        'precioTotal'
+        'precioTotal',
+        'usuario_id'
     ];
 
     public function usuario(){
-        return $this->hasOne(Usuario::class);
+        return $this->belongsTo(Usuario::class);
     }
     public function habitaciones(){
-        return $this->hasMany(Habitacion::class);
-        
+        return $this->belongsToMany(Habitacion::class,'reservacion_habitacion');
     }
 }

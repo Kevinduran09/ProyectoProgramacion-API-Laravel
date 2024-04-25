@@ -20,4 +20,10 @@ class Usuario extends Model
         'nomUsuario',
         'contraseña'
     ];
+
+
+    public function reservacion()
+    {
+        return $this->belongsTo(Reservacion::class);
+    }
 }
