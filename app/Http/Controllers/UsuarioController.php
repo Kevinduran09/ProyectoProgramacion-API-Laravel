@@ -78,7 +78,7 @@ class UsuarioController extends Controller
 
         return response()->json([
             'message'=> "Se encontro al usuario con la id: {$id}",
-            'User'=> $user,
+            'User'=> $user->setHidden(['nomUsuario', 'contraseña', 'created_at', 'updated_at']),
             'status'=>200
         ], 200);
     }

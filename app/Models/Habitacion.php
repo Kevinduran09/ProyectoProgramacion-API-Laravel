@@ -10,7 +10,7 @@ class Habitacion extends Model
     use HasFactory;
 
     protected $table = 'Habitacion';
-
+    protected $hidden = ['pivot', 'created_at', 'updated_at'];
     protected $fillable = [
         'disponibilidad',
         'precioNoche',

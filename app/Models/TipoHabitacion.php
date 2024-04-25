@@ -11,7 +11,7 @@ class TipoHabitacion extends Model
 
 
     protected $table = 'TipoHabitacion';
-
+    protected $hidden = ['created_at', 'updated_at'];
     protected $fillable = [
         'tipoHabitacion',
         'capacidad'

@@ -27,15 +27,6 @@ class ReservacionController extends Controller
             'status'=>200
         ], 200);
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
     /**
      * Store a newly created resource in storage.
      */
@@ -90,21 +81,120 @@ class ReservacionController extends Controller
                 'message'=>"No se encontro ninguna reserva con el id: $id"
             ], 200);
         }
+
+        return response()->json([
+            'message' => 'Reservación creada exitosamente.',
+            'reservacion' => $reservacion->load('usuario','habitaciones','habitaciones.tipoHabitacion'),
+            'status' => 201
+        ], 201);
     }
     
     /**
+     * partial Update the specified resource in storage.
+     */
+    public function partialUpdate(Request $request, $id)
+    {
+        $reserva = Reservacion::find($id);
+
+
+        if (!$reserva) {
+            return response()->json([
+                'messager' => 'No se encontro la reservacion buscada',
+                'status' => 400
+            ], 200);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'fechaIngreso' => '',
+            'fechaSalida' => 'after_or_equal:fechaIngreso',
+            'estado' => '',
+            'precioTotal' => 'numeric|regex:/^\d+(\.\d{1,2})?$/',
+            'usuario_id' => 'exists:Usuario,id'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Error al realizar la validacion de los datos',
+                'errors' => $validator->errors(),
+                'status' => 400
+            ], 400);
+        }
+
+       $reserva->update($request->only(['fechaIngreso','fechaSalida','estado','precioTotal','usuario_id']));
+
+        return response()->json([
+            'message' => 'Se actualizo el registro de la reserva',
+            'reserva' => $reserva->load('habitaciones')->load('usuario'),
+            'status' => 200
+        ], 200);
+    }
+    /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Reservacion $reservacion)
+    public function update(Request $request, $id)
     {
-        //
+        $reserva = Reservacion::find($id);
+
+
+        if(!$reserva){
+            return response()->json([
+                'messager'=>'No se encontro la reservacion buscada',
+                'status'=>400
+            ], 200);
+        }
+
+        $validator = Validator::make($request->all(),[
+            'fechaIngreso' => 'required',
+            'fechaSalida' => 'required|after_or_equal:fechaIngreso',
+            'estado' => 'required',
+            'precioTotal' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
+            'usuario_id' => 'required|exists:Usuario,id'
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'message'=>'Error al realizar la validacion de los datos',
+                'errors'=>$validator->errors(),
+                'status'=>400
+            ], 400);
+        }
+        
+        $reserva->fechaIngreso = $request->fechaIngreso;
+        $reserva->fechaSalida = $request->fechaSalida;
+        $reserva->estado = $request->estado;
+        $reserva->precioTotal = $request->precioTotal;
+        $reserva->usuario_id = $request->usuario_id;
+
+        $reserva->save();
+
+
+        return response()->json([
+            'message'=>'Se actualizo el registro de la reserva',
+            'reserva'=>$reserva->load('habitaciones')->load('usuario'),
+            'status'=>200
+        ], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Reservacion $reservacion)
+    public function destroy($id)
     {
-        //
+        $reserva = Reservacion::find($id);
+
+
+        if (!$reserva) {
+            return response()->json([
+                'messager' => 'No se encontro la reservacion buscada',
+                'status' => 400
+            ], 200);
+        }
+
+        $reserva->delete();
+
+        return response()->json([
+            'message'=>"se elimino la reservacion con id: $id",
+            'status'=>200
+        ], 200);
     }
 }

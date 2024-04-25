@@ -10,7 +10,7 @@ class Reservacion extends Model
     use HasFactory;
 
     protected $table = 'Reservacion';
-
+    protected $hidden = ['created_at', 'updated_at'];
     protected $fillable = [
         'fechaIngreso',
         'fechaSalida',
