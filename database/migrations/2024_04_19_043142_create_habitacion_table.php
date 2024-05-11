@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('disponibilidad');
             $table->float('precioNoche');
             $table->unsignedBigInteger('tipo_habitacion_id');
-            
             $table->foreign('tipo_habitacion_id')
                 ->references('id')
                 ->on('TipoHabitacion')

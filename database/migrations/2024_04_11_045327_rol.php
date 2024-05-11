@@ -11,23 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('Reservacion', function (Blueprint $table) {
+        Schema::create("Rol", function (Blueprint $table) {
             $table->id();
-            $table->date('fechaIngreso');
-            $table->date('fechaSalida');
-            $table->string('estado'); 
-            $table->float('PrecioTotal');
-            $table->foreignId('usuario_id')->constrained('Usuario')->onDelete('cascade');
-            
+            $table->string("tipoRol");
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('reservacion');
+        //
     }
 };

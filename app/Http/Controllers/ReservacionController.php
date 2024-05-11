@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Reservacion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
+use App\Http\Controllers\AuthController;
 class ReservacionController extends Controller
 {
     /**
@@ -32,7 +32,8 @@ class ReservacionController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->only(['fechaIngreso','fechaSalida','estado','precioTotal','usuario_id']),[
+        $user = AuthController::decodeToken($request->bearerToken(),true)->sub;
+        $validator = Validator::make($request->only(['fechaIngreso','fechaSalida','estado','precioTotal',$user]),[
             'fechaIngreso' =>'required',
             'fechaSalida' => 'required|after_or_equal:fechaIngreso',
             'estado'=>'required',
@@ -53,7 +54,7 @@ class ReservacionController extends Controller
             'fechaSalida' => $request->fechaSalida,
             'estado' => $request->estado,
             'precioTotal' => $request->precioTotal,
-            'usuario_id'=>$request->usuario_id
+            'usuario_id'=>$request->$user
         ]);
 
         try {

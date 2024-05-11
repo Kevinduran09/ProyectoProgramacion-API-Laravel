@@ -6,8 +6,11 @@ use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
+
 class UsuarioController extends Controller
 {
+
+
     /**
      * Display a listing of the resource.
      */
@@ -31,12 +34,13 @@ class UsuarioController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'cedula'=>'required|unique:Usuario',
-            'nombre'=>'required',
-            'apellidos'=>'required',
+            'cedula'=>'required|min:9|unique:Usuario',
+            'nombre'=>'required|string',
+            'apellidos'=>'required|string',
             'correo'=>'required|email|unique:Usuario',
             'nomUsuario'=>'required|unique:Usuario',
-            'contraseña'=>'required'
+            'contraseña'=>'required',
+            'rol_id'=> 'required|exists:rol,id',
         ]);
 
 
@@ -52,12 +56,13 @@ class UsuarioController extends Controller
             'cedula'=>$request->cedula,
             'nombre'=>$request->nombre,
             'apellidos'=>$request->apellidos,
-            'correo'=>$request->correo,
+            'correo'=>$request->correo, 
             'nomUsuario'=>$request->nomUsuario,
-            'contraseña'=>$request->contraseña
+            'contraseña'=> hash("sha256",$request->contraseña) ,
+            "rol_id"=> $request->rol_id,
         ]);
 
-        $data = ($user) ? ['usuario'=>$user,'status'=>201] : ['message'=>'Error al crear el registro','status'=>500];
+        $data = ($user) ? ['usuario'=>$user->load('rol'),'status'=>201] : ['message'=>'Error al crear el registro','status'=>500];
 
         return response()->json($data, 200);
     }
@@ -99,7 +104,7 @@ class UsuarioController extends Controller
         }
         // validar que vengan todos los atributos requeridos en la request
         $validator = Validator::make($request->all(), [
-            'cedula' => 'unique:Usuario',
+            'cedula' => 'unique:Usuario|min:9',
             'nombre' => '',
             'apellidos' => '',
             'correo' => 'email|unique:Usuario',
@@ -140,7 +145,7 @@ class UsuarioController extends Controller
         }
         // validar que vengan todos los atributos requeridos en la request
         $validator = Validator::make($request->all(), [
-            'cedula' => 'required|unique:Usuario',
+            'cedula' => 'required|unique:Usuario|min:9',
             'nombre' => 'required',
             'apellidos' => 'required',
             'correo' => 'required|email|unique:Usuario',

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use App\Models\Rol;
 class Usuario extends Model
 {
     use HasFactory;
@@ -18,12 +18,16 @@ class Usuario extends Model
         'apellidos',
         'correo',
         'nomUsuario',
-        'contraseña'
+        'contraseña',
+        'rol_id'
     ];
 
 
     public function reservacion()
     {
         return $this->belongsTo(Reservacion::class);
+    }
+    public function rol(){
+        return $this->belongsTo(rol::class);
     }
 }
