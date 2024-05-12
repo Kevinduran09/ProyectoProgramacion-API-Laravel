@@ -75,15 +75,21 @@ class AuthController extends Controller
     }
     public function createToken($user)
     {
-        $user = Usuario::find($user);
+        $user = Usuario::find($user)->load('rol');
 
         $token = JWT::encode([
             'user' => $user->id,
             'username' => $user->nomUsuario,
-            'rol'=> $user->rol()->tipoRol,
+            'rol'=> $user->rol->tipoRol,
             'exp' => Carbon::now()->addMinutes(5)->timestamp
         ], env('JWT_SECRET'), 'HS256');
 
         return response()->json(compact('token'));
     }
+    public function isAdmin($token)
+    {
+        $user = $this->decodeToken($token,true);
+        return ($user->rol == 'admin') ? true : false;   
+    }
 }
+

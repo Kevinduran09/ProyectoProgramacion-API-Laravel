@@ -19,7 +19,7 @@ class VerifyToken
         $jwt = new jwt();
         $token = $request->bearerToken();
         $logged = $jwt->decodeToken($token);
-
+        
         if (is_object($logged)) {
             return response()->json(['data'=>$logged]);
         }
