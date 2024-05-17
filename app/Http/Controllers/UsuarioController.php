@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Reservacion;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -24,7 +25,7 @@ class UsuarioController extends Controller
                 'status'=> 404
             ],200);
         }
-        return response()->json($users,200);
+        return response()->json($users->load('rol'),200);
     }
 
 
@@ -34,7 +35,7 @@ class UsuarioController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'cedula'=>'required|min:9|unique:Usuario',
+            'cedula'=>'required|min:9|max:9|unique:Usuario',
             'nombre'=>'required|string',
             'apellidos'=>'required|string',
             'correo'=>'required|email|unique:Usuario',
@@ -58,8 +59,8 @@ class UsuarioController extends Controller
             'apellidos'=>$request->apellidos,
             'correo'=>$request->correo, 
             'nomUsuario'=>$request->nomUsuario,
-            'contraseña'=> hash("sha256",$request->contraseña) ,
-            "rol_id"=> $request->rol_id,
+            'contraseña'=> hash("sha256",$request->contraseña),
+            "rol_id"=> (int)$request->rol_id,
         ]);
 
         $data = ($user) ? ['usuario'=>$user->load('rol'),'status'=>201] : ['message'=>'Error al crear el registro','status'=>500];
@@ -83,7 +84,7 @@ class UsuarioController extends Controller
 
         return response()->json([
             'message'=> "Se encontro al usuario con la id: {$id}",
-            'User'=> $user->setHidden(['nomUsuario', 'contraseña', 'created_at', 'updated_at']),
+            'User'=> $user->setHidden(['created_at', 'updated_at'])->load('rol'),
             'status'=>200
         ], 200);
     }
@@ -109,7 +110,8 @@ class UsuarioController extends Controller
             'apellidos' => '',
             'correo' => 'email|unique:Usuario',
             'nomUsuario' => 'unique:Usuario',
-            'contraseña' => ''
+            'contraseña' => '',
+            'rol_id'=>''
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -118,13 +120,13 @@ class UsuarioController extends Controller
                 'status' => 400
             ], 400);
         }
-
-        $user->update($request->only(['cedula','nombre','apellidos','correo','nomUsuario','contraseña']));
+        echo $request->nombre;
+        $user->update($request->only(['cedula','nombre','apellidos','correo','nomUsuario','contraseña','rol_id']));
     
 
         return response()->json([
             'message' => 'Se actualizo el registro del usuario',
-            'user' => $user,
+            'user' => $user->load('rol'),
             'status' => 200
         ], 200);
     }
@@ -150,7 +152,8 @@ class UsuarioController extends Controller
             'apellidos' => 'required',
             'correo' => 'required|email|unique:Usuario',
             'nomUsuario' => 'required|unique:Usuario',
-            'contraseña' => 'required'
+            'contraseña' => 'required',
+            'rol_id'=> 'required|numeric|exists:rol,id'
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -171,7 +174,7 @@ class UsuarioController extends Controller
 
         return response()->json([
             'message'=>'Se actualizo el registro del usuario',
-            'user'=> $user,
+            'user'=> $user->load('rol'),
             'status'=>200
         ], 200);
     }
@@ -197,4 +200,5 @@ class UsuarioController extends Controller
             'status' => 200
         ], 200);
     }
+    
 }

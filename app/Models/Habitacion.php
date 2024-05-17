@@ -14,7 +14,9 @@ class Habitacion extends Model
     protected $fillable = [
         'disponibilidad',
         'precioNoche',
-        'tipo_habitacion_id'
+        'tipo_habitacion_id',
+        'url',
+        'public_id',
     ];
 
     public function tipoHabitacion(){

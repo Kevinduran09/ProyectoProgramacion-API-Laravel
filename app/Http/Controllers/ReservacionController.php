@@ -32,20 +32,19 @@ class ReservacionController extends Controller
      */
     public function store(Request $request)
     {
-        $user = AuthController::decodeToken($request->bearerToken(),true)->sub;
-        $validator = Validator::make($request->only(['fechaIngreso','fechaSalida','estado','precioTotal',$user]),[
-            'fechaIngreso' =>'required',
-            'fechaSalida' => 'required|after_or_equal:fechaIngreso',
-            'estado'=>'required',
-            'precioTotal'=> 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
-            'usuario_id'=> 'required|exists:Usuario,id'
+        $validator = Validator::make($request->only(['fechaIngreso', 'fechaSalida', 'estado', 'precioTotal', 'usuario_id']), [
+            'fechaIngreso' => 'required|date|date_format:d/m/Y',
+            'fechaSalida' => 'required|date|date_format:d/m/Y|after_or_equal:fechaIngreso',
+            'estado' => 'required',
+            'precioTotal' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
+            'usuario_id' => 'exists:Usuario,id',
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response()->json([
-                'message'=>'Error al validar los datos',
-                'erros'=> $validator->errors(),
-                'status'=>400
+                'message' => 'Error al validar los datos',
+                'erros' => $validator->errors(),
+                'status' => 400
             ], 400);
         }
 
@@ -54,7 +53,7 @@ class ReservacionController extends Controller
             'fechaSalida' => $request->fechaSalida,
             'estado' => $request->estado,
             'precioTotal' => $request->precioTotal,
-            'usuario_id'=>$request->$user
+            'usuario_id' => $request->usuario_id
         ]);
 
         try {
@@ -65,7 +64,7 @@ class ReservacionController extends Controller
         }
         return response()->json([
             'message' => 'Reservación creada exitosamente.',
-            'reservacion' => $reservacion->load('usuario')->load('habitaciones'),
+            'reservacion' => $reservacion->load('usuario', 'habitaciones', 'habitaciones.tipoHabitacion'),
             'status' => 201
         ], 201);
     }
@@ -85,7 +84,7 @@ class ReservacionController extends Controller
 
         return response()->json([
             'message' => 'Reservación creada exitosamente.',
-            'reservacion' => $reservacion->load('usuario','habitaciones','habitaciones.tipoHabitacion'),
+            'reservacion' => $reservacion->load('usuario','habitaciones', 'habitaciones.tipoHabitacion'),
             'status' => 201
         ], 201);
     }
@@ -135,8 +134,6 @@ class ReservacionController extends Controller
     public function update(Request $request, $id)
     {
         $reserva = Reservacion::find($id);
-
-
         if(!$reserva){
             return response()->json([
                 'messager'=>'No se encontro la reservacion buscada',

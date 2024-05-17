@@ -25,7 +25,6 @@ class verifyIdentity
         }
 
         $token = $jwt->decodeToken($token, true);
-
         if ($token->user === (int)$request->route('id')) {
             return $next($request);
         } else {

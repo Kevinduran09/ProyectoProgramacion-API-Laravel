@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('disponibilidad');
             $table->float('precioNoche');
+            $table->string('url');
+            $table->string('public_id');
             $table->unsignedBigInteger('tipo_habitacion_id');
             $table->foreign('tipo_habitacion_id')
                 ->references('id')
@@ -29,6 +31,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+  
         Schema::dropIfExists('Habitacion');
     }
 };

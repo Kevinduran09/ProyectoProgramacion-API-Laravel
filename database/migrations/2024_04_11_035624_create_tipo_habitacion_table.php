@@ -18,12 +18,6 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // Especificar que esta migración debe ejecutarse primero
-        Schema::table('TipoHabitacion', function (Blueprint $table) {
-            $table->after('id', function ($table) {
-                // No se agregan columnas adicionales en este caso
-            });
-        });
     }
 
     /**
